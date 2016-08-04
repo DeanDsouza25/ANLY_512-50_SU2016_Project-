@@ -38,7 +38,7 @@ kable(desc,format = "pandoc", caption="Variables Description", col.names = c("In
   Some of the variables above may need further explanation as follows:  
   1. __Area__ - As this data set had to be built during a time where I needed to travel a lot and shift to a new apartment, I had to visit and stay at a few places before finally settling down in a new apartment. The values are namely 'Jc'-Jersey City, 'BK'-Brooklyn, 'NR'-New Rochelle, 'HAR'-Harrisburg, 'KOP'-King of Prussia and 'DVN'-Devon.  
   2. __Hrs..__ - This set of variables are mostly an approximate as they try to take into account distractions experienced in between. Further,'HrsYoutube' also includes the time I would play a music Playlist and leave it on in the background.
-  3. __Mood__ - This categorical variable doesn't properly describe the changes in mood over the day but is an estimate of my mood throughout the day.  
+  3. __Mood__ - This categorical variable doesn't properly describe the changes in mood over the day but is an estimate of my overall mood at the end of the day.
 
 ## Analysis  
 

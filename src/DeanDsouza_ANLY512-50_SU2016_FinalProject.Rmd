@@ -1,0 +1,49 @@
+---
+title: "Project Report"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(ggplot2)
+library(plotly)
+```
+
+## Data Collection  
+  
+  The data collection process was done over a period of roughly 45 days (from 06/22/2016 - 08/04/2016) and was driven by the following main questions:  
+  
+  1. How well have I managed my expenditure in various categories over the span of the month?(Keeping a $50 a day as acceptable and ideal)  
+  2. On average how well have I distributed my time across activities I perform on a near regular basis? (Also relating it to the amount of sleep I get)  
+  3. Does spending time on any particular activity have an influence of my overall mood on that day?  
+  4. Does the amount I walk around in a day help or in any way affect the amount I sleep?
+  
+  The data I gathered to answer these questions were limited due to various constraints and were mainly manually input into a microsoft excel file which was converted to .csv format for ease of use with R (mainly due to familiarity on working with the format).  
+  The data can hence be described as follows:  
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Setting up the contents for table of descriptions
+desc<-data.frame(
+  c("Day","Date","Groceries&Supplies","EatingOut","Amazon","Misc","Uber","OtherMOT","Total","DistTrav","DistWalk","Area","HrsSleep","HrsStudy","HrsRead","HrsYoutube","HrsNetflix","HrsESO","Mood"),
+  c("The day of the week","The date","Amount spent on groceries and other supplies for the house","Amount spent on ordering from restaurants or on other items such as coffee","Amount spent on Amazon","Amount spent on other unrelated items that would normally be a one time purchase","Amount spent on Uber rides","Amount spent on other modes of transpot(mostly buses and NYC Subway)","Total Amount spent on that day","Distance traveled by modes of transport","Distance walked (leisurely or to stores and back)","Area I ended up at the end of the day","Hours of sleep I got (From the previous night to the current day)","Time spent studying (including coding and attending class, in hours)","Time spent reading (News, Papers,Reddit, etc., in hours)","Time spent watching videos on YouTube (in hours)","Time spent watching series or movies on Netflix (in hours)","Time spent on Elder Scrolls Online (in hours)","My overall mood on that day")
+  )
+
+# Displaying the Table
+kable(desc,format = "pandoc", caption="Variables Description", col.names = c("Index", "Variable Name", "Description"), align = 'l')
+``` 
+  
+  Some of the variables above may need further explanation as follows:  
+  1. __Area__ - As this data set had to be built during a time where I needed to travel a lot and shift to a new apartment, I had to visit and stay at a few places before finally settling down in a new apartment. The values are namely 'Jc'-Jersey City, 'BK'-Brooklyn, 'NR'-New Rochelle, 'HAR'-Harrisburg, 'KOP'-King of Prussia and 'DVN'-Devon.  
+  2. __Hrs..__ - This set of variables are mostly an approximate as they try to take into account distractions experienced in between. Further,'HrsYoutube' also includes the time I would play a music Playlist and leave it on in the background.
+  3. __Mood__ - This categorical variable doesn't properly describe the changes in mood over the day but is an estimate of my mood throughout the day.  
+
+## Analysis  
+
+
+
+## Visualization methods
+
+## Further Work

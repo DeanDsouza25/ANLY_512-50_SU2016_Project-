@@ -1,0 +1,107 @@
+---
+title: "Quantified Self Project"
+author: "Dean D'souza"
+Date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(ggplot2)
+library(plotly)
+library(tidyr)
+
+# Setting up the contents for table of descriptions
+desc<-data.frame(
+  c("Day","Date","Groceries&Supplies","EatingOut","Amazon","Misc","Uber","OtherMOT","Total","DistTrav","DistWalk","Area","HrsSleep","HrsStudy","HrsRead","HrsYoutube","HrsNetflix","HrsESO","Mood"),
+  c("The day of the week","The date","Amount spent on groceries and other supplies for the house","Amount spent on ordering from restaurants or on other items such as coffee","Amount spent on Amazon","Amount spent on other unrelated items that would normally be a one time purchase","Amount spent on Uber rides","Amount spent on other modes of transpot(mostly buses and NYC Subway)","Total Amount spent on that day","Distance traveled by modes of transport","Distance walked (leisurely or to stores and back)","Area I ended up at the end of the day","Hours of sleep I got (From the previous night to the current day)","Time spent studying (including coding and attending class, in hours)","Time spent reading (News, Papers,Reddit, etc., in hours)","Time spent watching videos on YouTube (in hours)","Time spent watching series or movies on Netflix (in hours)","Time spent on Elder Scrolls Online (in hours)","My overall mood on that day")
+  )
+
+# Loading the data from the local .csv file
+ProjectDat <- read.csv("~/GitHub/ANLY_512-50_SU2016_Project/src/ProjectDat.csv")
+
+# Reassigning for ease of use and removing data from memory
+dat<-ProjectDat
+dat$Date<-as.Date(ProjectDat$Date,format="%m/%d/%y")
+remove(ProjectDat)
+```
+
+Dashboard
+=======================================================================
+
+Sidebar {.sidebar}
+-----------------------------------------------------------------------
+
+### Statistics  
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+summary(dat[,3:19])
+```
+
+Row {data-height=600}
+-----------------------------------------------------------------------
+
+### Expenditure over Time
+
+```{r}
+# Setting up the data
+datexp<-dat
+exptemp<-gather(datexp, Category, Expenditure, Groceries.Supplies:Uber)
+
+# Plotting the data
+p1<-ggplot(data=exptemp, aes(x=Date,y=Expenditure,colour=Category))+geom_line()
+p1
+```
+
+
+Row {data-width=400}
+-----------------------------------------------------------------------
+
+### Variation of Hours Spent on Activities
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Setting up the data
+dathrs<-dat
+hrstemp<-gather(dathrs, Category, Hours.Spent, HrsStudy:HrsESO)
+
+# PLotting with facets
+p4<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()+facet_wrap(~Category, scales = "free")
+(gg<-ggplotly(p4))
+```
+
+### Variation of Mood
+
+```{r}
+# Setting up the data
+datexp<-dat
+hrsmood<-gather(datexp, Category, Hours.Spent, HrsStudy:HrsESO)
+
+#Plotting the data
+#p5<-ggplot(data=hrsmood, aes(x=Date,y=Hours.Spent, #colour=Mood))+geom_point(aes(text=paste("Category :",hrsmood$Category)))
+#(gg<-ggplotly(p5))
+
+pt<-ggplot(data = hrsmood[,"Hours.Spent">0], aes(x=factor(Hours.Spent), fill= factor(Mood)))+geom_bar(width=1)+coord_polar(theta="y")
+(gg<-ggplotly(pt))
+```
+
+### Variation of Hours of Sleep with Distance Walked 
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+p6<-ggplot(data = dat, aes(x=DistWalk,y=HrsSleep, colour= DistTrav))+geom_point(aes(text=paste("Day :",dat$Day)))+geom_smooth()
+(gg<-ggplotly(p6))
+```
+
+About
+=======================================================================
+
+### Metadata
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE, results='asis'}
+kable(desc, col.names = c("Variable Name","Description" ))
+```
+
+#### [Github Link](https://github.com/DeanDsouza25/ANLY_512-50_SU2016_Project/tree/master/src)

@@ -138,7 +138,7 @@ p1
   We could take it a step further by facetting the plot for clarity:
   
 ```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p2<-ggplot(data=exptemp, aes(x=Date,y=Expenditure,colour=Category))+geom_line()+facet_wrap(~Category)
+p2<-ggplot(data=exptemp, aes(x=Date,y=Expenditure,colour=Category))+geom_line()+facet_wrap(~Category, scales = "free")
 p2
 ```
 
@@ -153,11 +153,11 @@ hrstemp<-gather(dathrs, Category, Hours.Spent, HrsStudy:HrsESO)
 p3<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()
 (gg<-ggplotly(p3))
 # PLotting with facets
-p4<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()+facet_wrap(~Category)
+p4<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()+facet_wrap(~Category, scales = "free")
 (gg<-ggplotly(p4))
 ```
 
-  3. The third question can be better visualized with the help of a facet wrapped scatterplot as follows:  
+  3. The third question can be better visualized with the help of a scatterplot as follows:  
   
 ```{r,warning=FALSE,message=FALSE,echo=FALSE}
 # Setting up the data

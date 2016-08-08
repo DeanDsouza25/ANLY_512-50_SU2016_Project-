@@ -39,7 +39,7 @@ Sidebar {.sidebar}
 ### Statistics  
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE}
-summary(dat[,3:19])
+#summary(dat[,3:19])
 ```
 
 Row {data-height=600}
@@ -47,7 +47,7 @@ Row {data-height=600}
 
 ### Expenditure over Time
 
-```{r}
+```{r,warning=FALSE,message=FALSE,fig.width=7,fig.height=4}
 # Setting up the data
 datexp<-dat
 exptemp<-gather(datexp, Category, Expenditure, Groceries.Supplies:Uber)
@@ -75,17 +75,17 @@ p4<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line
 
 ### Variation of Mood
 
-```{r}
+```{r,warning=FALSE,message=FALSE}
 # Setting up the data
 datexp<-dat
 hrsmood<-gather(datexp, Category, Hours.Spent, HrsStudy:HrsESO)
 
 #Plotting the data
-#p5<-ggplot(data=hrsmood, aes(x=Date,y=Hours.Spent, #colour=Mood))+geom_point(aes(text=paste("Category :",hrsmood$Category)))
-#(gg<-ggplotly(p5))
+p5<-ggplot(data=hrsmood, aes(x=Date,y=Hours.Spent, colour=Mood))+geom_point(aes(text=paste("Category :",hrsmood$Category)))
+(gg<-ggplotly(p5))
 
-pt<-ggplot(data = hrsmood[,"Hours.Spent">0], aes(x=factor(Hours.Spent), fill= factor(Mood)))+geom_bar(width=1)+coord_polar(theta="y")
-(gg<-ggplotly(pt))
+#pt<-ggplot(data = hrsmood[,"Hours.Spent">0], aes(x=factor(Hours.Spent), fill= #factor(Mood)))+geom_bar(width=1)+coord_polar(theta="y")
+#(gg<-ggplotly(pt))
 ```
 
 ### Variation of Hours of Sleep with Distance Walked 

@@ -29,6 +29,7 @@ ProjectDat <- read.csv("~/GitHub/ANLY_512-50_SU2016_Project/src/ProjectDat.csv")
 dat<-ProjectDat
 dat$Date<-as.POSIXct(ProjectDat$Date,format="%m/%d/%Y")
 dat$Uber<-as.numeric(dat$Uber)
+dat<-na.omit(dat)
 remove(ProjectDat)
 ```
 
@@ -42,7 +43,8 @@ Sidebar {.sidebar data-width=200}
 
 * The visualizations try to answer all questions laid out in the Project Report.
 * Additional information about the datasets variables are provided in the __About__ page tab.
-* The GitHub link for this Project is also provided at the the end of the __About__ page.
+* The GitHub link for this Project is also provided at the the end of the __About__ page.  
+* __DistTrav__ refers to the Distance Traveled that day.
   
 Row {data-height=575}
 -----------------------------------------------------------------------

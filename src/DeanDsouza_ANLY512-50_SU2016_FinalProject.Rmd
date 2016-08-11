@@ -123,55 +123,7 @@ cor(dat[,c(10,11,13)])
   
   In order to get a better idea through visualization means, we select the following visualization methods:
   
-  1. The first question can be visualized better with the help of a line plot distinguished by the amount spent in each category (in our data frame they are separate variables)
-  
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-# Setting up the data
-datexp<-dat
-exptemp<-gather(datexp, Category, Expenditure, Groceries.Supplies:Uber)
-
-# Plotting the data
-p1<-ggplot(data=exptemp, aes(x=Date,y=Expenditure,colour=Category))+geom_line()
-p1
-```  
-  
-  We could take it a step further by facetting the plot for clarity:
-  
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p2<-ggplot(data=exptemp, aes(x=Date,y=Expenditure,colour=Category))+geom_line()+facet_wrap(~Category, scales = "free")
-p2
-```
-
-  2. The second question can be visualized better with the help of a line plot as follows:
-  
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-# Setting up the data
-dathrs<-dat
-hrstemp<-gather(dathrs, Category, Hours.Spent, HrsStudy:HrsESO)
-
-# Plotting the graphic
-p3<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()
-(gg<-ggplotly(p3))
-# PLotting with facets
-p4<-ggplot(data = hrstemp, aes(x=Date,y=Hours.Spent, colour=Category))+geom_line()+facet_wrap(~Category, scales = "free")
-(gg<-ggplotly(p4))
-```
-
-  3. The third question can be better visualized with the help of a scatterplot as follows:  
-  
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-# Setting up the data
-datexp<-dat
-hrsmood<-gather(datexp, Category, Hours.Spent, HrsStudy:HrsESO)
-
-#Plotting the data
-p5<-ggplot(data=hrsmood, aes(x=Date,y=Hours.Spent, colour=Mood))+geom_point(aes(text=paste("Category :",hrsmood$Category)))
-(gg<-ggplotly(p5))
-```  
-
-  4. The final question can be better visualized with the help of a scatterplot keeping the distance travelled as a factor for the size of points.  
-  
-```{r,warning=FALSE,message=FALSE,echo=FALSE}
-p6<-ggplot(data = dat, aes(x=DistWalk,y=HrsSleep, colour= DistTrav))+geom_point(aes(text=paste("Day :",dat$Day)))+geom_smooth()
-(gg<-ggplotly(p6))
-```
+  1. The first question can be visualized better with the help of a line plot distinguished by the amount spent in each category (in our data frame they are separate variables).
+  2. The second question can be visualized better with the help of a line plot as follows.
+  3. The third question can be better visualized with the help of a scatterplot as follows.  
+  4. The final question can be better visualized with the help of a scatterplot keeping the distance travelled as a factor for the size of points.

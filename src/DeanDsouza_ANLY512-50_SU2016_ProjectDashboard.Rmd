@@ -1,0 +1,115 @@
+---
+title: "Quantified Self Project"
+author: "Dean D'souza"
+Date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme: united
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(ggplot2)
+library(plotly)
+library(tidyr)
+
+# Setting up the contents for table of descriptions
+desc<-data.frame(
+  c("Day","Date","Groceries&Supplies","EatingOut","Amazon","Misc","Uber","OtherMOT","Total","DistTrav","DistWalk","Area","HrsSleep","HrsStudy","HrsRead","HrsYoutube","HrsNetflix","HrsESO","Mood"),
+  c("The day of the week","The date","Amount spent on groceries and other supplies for the house","Amount spent on ordering from restaurants or on other items such as coffee","Amount spent on Amazon","Amount spent on other unrelated items that would normally be a one time purchase","Amount spent on Uber rides","Amount spent on other modes of transpot(mostly buses and NYC Subway)","Total Amount spent on that day","Distance traveled by modes of transport","Distance walked (leisurely or to stores and back)","Area I ended up at the end of the day","Hours of sleep I got (From the previous night to the current day)","Time spent studying (including coding and attending class, in hours)","Time spent reading (News, Papers,Reddit, etc., in hours)","Time spent watching videos on YouTube (in hours)","Time spent watching series or movies on Netflix (in hours)","Time spent on Elder Scrolls Online (in hours)","My overall mood on that day")
+  )
+
+# Loading the data from the local .csv file
+ProjectDat <- read.csv("~/GitHub/ANLY_512-50_SU2016_Project/src/ProjectDat.csv")
+
+# Reassigning for ease of use and removing data from memory
+dat<-ProjectDat
+dat$Date<-as.POSIXct(ProjectDat$Date,format="%m/%d/%Y")
+dat$Uber<-as.numeric(dat$Uber)
+dat<-na.omit(dat)
+remove(ProjectDat)
+```
+
+Dashboard
+=======================================================================
+
+Sidebar {.sidebar data-width=200}
+-----------------------------------------------------------------------
+
+### Comments
+
+* The visualizations try to answer all questions laid out in the Project Report.
+* Additional information about the datasets variables are provided in the __About__ page tab.
+* The GitHub link for this Project is also provided at the the end of the __About__ page.  
+* __DistTrav__ refers to the Distance Traveled that day.
+  
+Row {data-height=575}
+-----------------------------------------------------------------------
+
+### Expenditure over Time
+
+```{r,warning=FALSE,message=FALSE,fig.width=11,fig.height=4}
+# Setting up the data for plotting
+datexp<-dat
+exptemp<-gather(datexp, Category, Expenditure, Groceries.Supplies:Uber)
+exptemp2<-exptemp[exptemp$Category=="Groceries.Supplies" | exptemp$Category=="EatingOut" | exptemp$Category=="Uber",]
+
+# Horizontal lines object
+hlin<-data.frame(CutOff=c(22,32,22),Category=c("Groceries.Supplies","EatingOut","Uber"))
+
+# Plotting the data
+p1<-ggplot(data=exptemp2, aes(x=Date,y=as.numeric(Expenditure),colour=Category))+geom_line()+ylab("Amount")+facet_wrap(~Category)+geom_hline(aes(yintercept=CutOff),hlin)+scale_color_brewer(palette = "Accent")+theme_dark()+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))
+(gg<-ggplotly(p1))
+```
+
+### Distribution of Hours Spent on Activities {data-width=365}
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Setting up the data
+dathrs<-dat
+hrstemp<-gather(dathrs, Category, Hours, HrsStudy:HrsNetflix)
+
+# Plotting
+p2<-ggplot(data=hrstemp, aes(x=Date,y=Category))+geom_tile(aes(fill=Hours))+scale_fill_gradient(low="white", high="Brown")+scale_x_discrete(expand = c(0, 0))+scale_y_discrete(expand= c(0, 0), labels=c("Netflix","Reading","Studying","YouTube"))+ylab("Activity\n")+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))
+(gg<-ggplotly(p2))
+```
+
+Row {data-height=425}
+-----------------------------------------------------------------------
+
+### Variation of Hours of Sleep with Distance Walked 
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Plotting the interactive plot
+p6<-ggplot(data = dat, aes(x=DistWalk,y=HrsSleep, size= DistTrav,colour=DistTrav))+geom_point(aes(text=paste("Date :",dat$Date)))+geom_smooth(se=FALSE)+theme_light()+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))+ylab("Hours of Sleep")+xlab("Distance Walked")+guides(size=FALSE)
+(gg<-ggplotly(p6))
+```
+
+### Distribution of Activities based on mood {data-width=200}
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Setting up the data to be plotted correctly
+datexp<-dat
+hrsmood<-gather(datexp, Category, Hours, HrsStudy:HrsESO)
+hrsmood1<-hrsmood[hrsmood$Hours>0,]
+hrsmood1$Category<-ifelse(hrsmood1$Category=="HrsStudy","Study",ifelse(hrsmood1$Category=="HrsRead","Reading",ifelse(hrsmood1$Category=="HrsYoutube","YouTube",ifelse(hrsmood1$Category=="HrsNetflix","Netflix",ifelse(hrsmood1$Category=="HrsESO","ESO","")))))
+
+#Plotting the data
+p3<-ggplot(data=na.omit(hrsmood1), aes(x=Mood,fill=Category,colour=Category))+geom_bar(width=1)+coord_polar(theta="y")+scale_color_brewer(palette = "Pastel1")+theme_light()+theme(axis.title.x=element_text(face="bold"))
+p3
+```
+
+About
+=======================================================================
+
+### Metadata
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE, results='asis'}
+kable(desc, col.names = c("Variable Name","Description" ))
+```
+  
+  
+##### [Github Link](https://github.com/DeanDsouza25/ANLY_512-50_SU2016_Project/tree/master/src)

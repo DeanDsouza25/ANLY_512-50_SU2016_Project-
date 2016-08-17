@@ -1,0 +1,109 @@
+---
+title: "Project Report"
+author: "Dean D'souza"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(tidyr)
+library(ggplot2)
+library(plotly)
+```
+
+## Data Collection  
+  
+  The data collection process was done over a period of roughly 56 days (from 06/22/2016 - 08/16/2016) and was driven by the following main questions:  
+  
+  1. How well have I managed my expenditure in various categories over the span of the month?(Keeping a $60 a day as acceptable and ideal)  
+  2. On average how well have I distributed my time across activities I perform on a near regular basis?    
+  3. Does spending time on any particular activity have an influence of my overall mood on that day?  
+  4. Does the amount I walk around in a day help or in any way affect the amount I sleep?
+  
+  The data I gathered to answer these questions were limited due to various constraints and were mainly manually input into a microsoft excel file which was converted to .csv format for ease of use with R (mainly due to familiarity on working with the format).  
+  Due to space constraints, the data table is not described here but is present under the __About__ page tab in the dashboard file.However, some of the variables may need further explanation and are as follows:  
+    
+    1. Area - As this data set had to be built during a time where I needed to travel a lot and shift to a new apartment, I had to visit and stay at a few places before finally settling down in a new apartment. The values are namely 'Jc'-Jersey City, 'BK'-Brooklyn, 'NR'-New Rochelle, 'HAR'-Harrisburg, 'KOP'-King of Prussia and 'DVN'-Devon.  
+      
+      2. Hrs.. - This set of variables are mostly an approximate as they try to take into account distractions experienced in between. Further,'HrsYoutube' also includes the time I would play a music Playlist and leave it on in the background.  
+        
+        3. Mood - This categorical variable doesn't properly describe the changes in mood over the day but is an estimate of my overall mood at the end of the day.
+
+## Analysis  
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Loading the data from the local .csv file
+ProjectDat <- read.csv("~/GitHub/ANLY_512-50_SU2016_Project/src/ProjectDat.csv")
+
+# Reassigning for ease of use and removing data from memory and correcting issues
+dat<-ProjectDat
+dat$Date<-as.POSIXct(ProjectDat$Date,format="%m/%d/%Y")
+dat$Uber<-as.numeric(dat$Uber)
+dat<-na.omit(dat)
+remove(ProjectDat)
+```
+  
+  We try to answer the first question of 'How well have I managed my expenditure?'. Put in other words, have I been able to keep within my limit of $60 per day? However, most columns contatin one time payments that should not be considered, so we put forward a new question, 'Have I kept my `daily requirements` expenditure less than $60?'. We calculate these as follows:
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+# Counting number of rows that satisfy the limit
+nrow(dat[with(dat, na.omit(Groceries.Supplies+EatingOut+as.numeric(Uber)) <=60),])
+```  
+  
+  Based on the above conditions (if we exclude expenditure due to other reasons), I was able to keep within my 'daily requirements' budget for most days. But when it comes to visualizing the data, it would be better to place __CutOff__ values for each important category.
+  
+  Next, we try to answer the question of 'How well have I distributed my time across activities?'. In order to do this we try to compare the averages over each week.  
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE,out.height=3,out.width=4}
+# Subsetting the data for 
+dath<-dat[,14:18]
+dath$Total<-with(dath,HrsStudy+HrsRead+HrsYoutube+HrsNetflix+HrsESO)
+weekly<-NULL
+for(i in c(1,8,15,22,29,36,43)){
+  weekly<-rbind(weekly,colSums(dath[i:(i+7),], na.rm = TRUE))
+}
+weeklyratio<-NULL
+for(i in 1:nrow(weekly)){
+  weeklyratio<-rbind(weeklyratio,weekly[i,]/weekly[i,6])
+}
+weeklyratio
+```  
+  
+  From the above matrix of ratios we can see that for the most part, time allocated is distributed unevenly per week which indicates that better management of time would be required.(personal opinion).  
+  
+  Next we try to answer the question on 'Whether spending time on any particular activity have an effect on my overall mood?'. We do this by seeing the correlation among variables as follows:  
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE,out.height=3,out.width=4}
+datc<-dat[,13:19]
+datc$Mcode[datc$Mood=="Good"]<-"3"
+datc$Mcode[datc$Mood=="Okay"]<-"2"
+datc$Mcode[datc$Mood=="Bad"]<-"1"
+cor(data.matrix(datc[-7]))
+```  
+  
+  From the above correlation matrix we can see that when it comes to 'Mood', 'HrsNetflix' seems to have the most positive effect. The remaining covaraiates have a mix of negative and positive effect but not as much.  
+  
+  Next we try to answer the question of 'does the amount I walk have an effect on my sleep?'. We do this as follows:  
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE,out.height=3,out.width=4}
+cor(dat[,c(11,13)])
+```  
+  
+  From the correlation matrix we see that it does have a decent effect, but let's take into account distance traveled as well. We do it as follows:
+  
+```{r,warning=FALSE,message=FALSE,echo=FALSE,out.height=3,out.width=4}
+cor(dat[,c(10,11,13)])
+```  
+  
+  From the above correlation matrix we can see that distance traveled has a negative correlation with the amount of sleep I get.    
+
+## Visualization methods  
+  
+  In order to get a better idea through visualization means, we select the following visualization methods:
+  
+  1. The first question can be visualized better with the help of a line plot distinguished by the amount spent in each category (in our data frame they are separate variables). We further improve on it by setting __CutOff__ values for the three important categories of __Groceries.Supplies__, __EatingOut__ and __Uber__, and further facetting the plot for better clarity.
+  2. The second question can be visualized better with the help of a heatmap plotted using the `geom_tile()` function in ggplot2. 
+  3. The third question can be better visualized with the help of a polar coordinate plot that is made to function more as a pie chart such that based on the mood we can see which activities are performed and how often. (We can see how a little time for each activity can help with balancing my mood)
+  4. The final question can be better visualized with the help of a scatterplot keeping the distance travelled as a factor for the size of points as well as colour of points for better clarity.

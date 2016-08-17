@@ -6,7 +6,7 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
-    theme: cerulean
+    theme: united
 ---
 
 ```{r setup, include=FALSE}
@@ -61,7 +61,7 @@ exptemp2<-exptemp[exptemp$Category=="Groceries.Supplies" | exptemp$Category=="Ea
 hlin<-data.frame(CutOff=c(22,32,22),Category=c("Groceries.Supplies","EatingOut","Uber"))
 
 # Plotting the data
-p1<-ggplot(data=exptemp2, aes(x=Date,y=as.numeric(Expenditure),colour=Category))+geom_line()+ylab("Expenditure")+facet_wrap(~Category)+geom_hline(aes(yintercept=CutOff),hlin)+scale_color_brewer(palette = "Accent")+theme_dark()+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))
+p1<-ggplot(data=exptemp2, aes(x=Date,y=as.numeric(Expenditure),colour=Category))+geom_line()+ylab("Amount")+facet_wrap(~Category)+geom_hline(aes(yintercept=CutOff),hlin)+scale_color_brewer(palette = "Accent")+theme_dark()+theme(axis.title.x=element_text(size=10),axis.title.y=element_text(size=10))
 (gg<-ggplotly(p1))
 ```
 
@@ -88,7 +88,7 @@ p6<-ggplot(data = dat, aes(x=DistWalk,y=HrsSleep, size= DistTrav,colour=DistTrav
 (gg<-ggplotly(p6))
 ```
 
-### Productivity based on Mood {data-width=200}
+### Distribution of Activities based on mood {data-width=200}
 
 ```{r,warning=FALSE,message=FALSE,echo=FALSE}
 # Setting up the data to be plotted correctly
@@ -98,7 +98,7 @@ hrsmood1<-hrsmood[hrsmood$Hours>0,]
 hrsmood1$Category<-ifelse(hrsmood1$Category=="HrsStudy","Study",ifelse(hrsmood1$Category=="HrsRead","Reading",ifelse(hrsmood1$Category=="HrsYoutube","YouTube",ifelse(hrsmood1$Category=="HrsNetflix","Netflix",ifelse(hrsmood1$Category=="HrsESO","ESO","")))))
 
 #Plotting the data
-p3<-ggplot(data=na.omit(hrsmood1), aes(x=Mood,fill=Category,colour=Category))+geom_bar(width=1)+coord_polar(theta="y")+scale_color_brewer(palette = "Pastel1")+theme_light()
+p3<-ggplot(data=na.omit(hrsmood1), aes(x=Mood,fill=Category,colour=Category))+geom_bar(width=1)+coord_polar(theta="y")+scale_color_brewer(palette = "Pastel1")+theme_light()+theme(axis.title.x=element_text(face="bold"))
 p3
 ```
 

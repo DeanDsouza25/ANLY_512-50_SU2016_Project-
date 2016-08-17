@@ -15,7 +15,7 @@ library(plotly)
 
 ## Data Collection  
   
-  The data collection process was done over a period of roughly 51 days (from 06/22/2016 - 08/11/2016) and was driven by the following main questions:  
+  The data collection process was done over a period of roughly 56 days (from 06/22/2016 - 08/16/2016) and was driven by the following main questions:  
   
   1. How well have I managed my expenditure in various categories over the span of the month?(Keeping a $60 a day as acceptable and ideal)  
   2. On average how well have I distributed my time across activities I perform on a near regular basis?    
@@ -104,6 +104,6 @@ cor(dat[,c(10,11,13)])
   In order to get a better idea through visualization means, we select the following visualization methods:
   
   1. The first question can be visualized better with the help of a line plot distinguished by the amount spent in each category (in our data frame they are separate variables). We further improve on it by setting __CutOff__ values for the three important categories of __Groceries.Supplies__, __EatingOut__ and __Uber__, and further facetting the plot for better clarity.
-  2. The second question can be visualized better with the help of a heatmap plotted usign the `geom_tile()` function in ggplot2. 
-  3. The third question can be better visualized with the help of a polar coordnate plot that is made to function more as a pie chart such that based on the mood we can see which acticities are performed and how often.
+  2. The second question can be visualized better with the help of a heatmap plotted using the `geom_tile()` function in ggplot2. 
+  3. The third question can be better visualized with the help of a polar coordinate plot that is made to function more as a pie chart such that based on the mood we can see which activities are performed and how often. (We can see how a little time for each activity can help with balancing my mood)
   4. The final question can be better visualized with the help of a scatterplot keeping the distance travelled as a factor for the size of points as well as colour of points for better clarity.
